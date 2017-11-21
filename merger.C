@@ -8,7 +8,10 @@ using namespace std;
 
 bool verbose = false;
 
-void find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int mini_run, Long64_t mini_event, std::vector<float> test){
+int current_open_file = -1;
+TFile * aod_file;
+
+void find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int mini_run, Long64_t mini_event, std::vector<float>& test){
 
   //Loop over AOD file list
   unsigned int N = aod_list.size();
@@ -20,10 +23,14 @@ void find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int mi
     if(verbose && i==0) cout << "Starting search for Run " << mini_run << " Event " << mini_event << " at file " << f << endl;
     if(verbose) cout << "Loop: " << f << endl;
 
-    TFile *aod_file = TFile::Open("root://cmseos.fnal.gov://"+aod_list[f], "READ");
-    if(aod_file->IsZombie()){
-      cout << "aod_file is zombie" << endl;
-      return;
+    if(current_open_file<0 || (unsigned int)current_open_file!=f){
+      if(current_open_file>=0) aod_file->Close();
+      current_open_file = f;
+      aod_file = TFile::Open("root://cmseos.fnal.gov://"+aod_list[f], "READ");
+      if(aod_file->IsZombie()){
+	cout << "aod_file is zombie" << endl;
+	return;
+      }
     }
     
     //Only get what you need from AOD file
