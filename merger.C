@@ -11,7 +11,7 @@ bool verbose = false;
 int current_open_file = -1;
 TFile * aod_file;
 
-void find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int mini_run, Long64_t mini_event, std::vector<float>& test){
+int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int mini_run, Long64_t mini_event, std::vector<Long64_t>& test){
 
   //Loop over AOD file list
   unsigned int N = aod_list.size();
@@ -29,7 +29,7 @@ void find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int mi
       aod_file = TFile::Open("root://cmseos.fnal.gov://"+aod_list[f], "READ");
       if(aod_file->IsZombie()){
 	cout << "aod_file is zombie" << endl;
-	return;
+	return 0;
       }
     }
     
@@ -52,13 +52,17 @@ void find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int mi
       if(aod_run != mini_run) continue;
       if(aod_event != mini_event) continue;
       
+      //cout << "AOD: " << aod_run << " " << aod_event << endl;
+      //cout << "Min: " << mini_run << " " << mini_event << endl;
+      
       //Matched!
       if(verbose) cout << "Found match --  " << aod_list[f] << endl;
       test.push_back(aod_event);//Change to real variable
       start_suggest = f;
-      return;
+      return 1;
     }    
   }
+  return 0;
 }
 
 
@@ -100,8 +104,8 @@ void merger(TString miniaod_file_name){
   TTree *merged_tree = miniaod_tree->CloneTree();
 
   //New branches for merged tree
-  std::vector<float> test;
-  TBranch* b_test = merged_tree->Branch("TEST", "vector<float>", &test);
+  std::vector<Long64_t> test;
+  TBranch* b_test = merged_tree->Branch("TEST", "vector<Long64_t>", &test);
 
 
   /////////////////////////////
@@ -117,10 +121,10 @@ void merger(TString miniaod_file_name){
     test.clear();
 
     //Find aod
-    find_aod(aod_list, start_suggest, miniaod_run, miniaod_event, test);
+    int success = find_aod(aod_list, start_suggest, miniaod_run, miniaod_event, test);
     
     //Fill new branches
-    b_test->Fill();
+    if(success) b_test->Fill();
   }
 
   merged_file->Write();
