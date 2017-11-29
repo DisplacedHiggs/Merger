@@ -1,5 +1,7 @@
 #!/bin/bash
 
+date
+
 MAINDIR=`pwd`
 ls
 
@@ -50,3 +52,5 @@ rm merger*
 rm -r CMSSW_8_0_26_patch2
 #rm CMSSW_8_0_26_patch2.tar.gz
 ls
+
+date
