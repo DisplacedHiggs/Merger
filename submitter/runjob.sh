@@ -36,7 +36,7 @@ do
     else
         #echo "$var"
         #For now, inputs are accessed from EOS directly, not xrdcp'ed
-	root -l -b -q "merger.C+(\"$var\",\"${$1}.list\")"
+	root -l -b -q "merger.C+(\"$var\",\"$1.list\")"
 
 	for f in merged_*.root; do
 	    xrdcp $f $1/$f 

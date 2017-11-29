@@ -4,6 +4,8 @@
 doSubmit=false
 maxfilesperjob=3 
 outdir=root://cmseos.fnal.gov//store/user/lpchbb/LLDJntuples/merged
+AOD_LIST_LOCATION=${CMSSW_BASE}/src/LLDJstandalones/lists/
+MINIAOD_LIST_LOCATION=${CMSSW_BASE}/src/LLDJstandalones/lists/
 
 samples=(  \
  "DY50"                               \
@@ -34,7 +36,7 @@ makeasubmitdir () {
  printf "Executable = ../runjob.sh\n" >> $submitfile
  printf "Should_Transfer_Files = YES \n" >> $submitfile
  printf "WhenToTransferOutput = ON_EXIT_OR_EVICT\n" >> $submitfile
- printf "Transfer_Input_Files = ../runjob.sh, ../../merger.C, ${CMSSW_BASE}/src/LLDJstandalones/lists/$1.list\n" >> $submitfile
+ printf "Transfer_Input_Files = ../runjob.sh, ../../merger.C, ${AOD_LIST_LOCATION}/$1.list\n" >> $submitfile
  printf "Notification=Never\n" >> $submitfile
  printf "notify_user = $(whoami)@cern.ch\n" >> $submitfile
  printf "x509userproxy = $X509_USER_PROXY\n" >> $submitfile
@@ -61,7 +63,7 @@ makeasubmitdir () {
 	 split_count=0
      fi
      
- done <${CMSSW_BASE}/src/LLDJstandalones/lists/$1.list
+ done <${MINIAOD_LIST_LOCATION}/$1.list
  
  if [ ${doSubmit} = true ]
  then
