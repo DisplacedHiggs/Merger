@@ -9,7 +9,7 @@ merger("/eos/uscms/store/group/lpchbb/LLDJntuples/splot/ZH_HToSSTobbbb_ZToLL_MH-
 ```
 
 ## With condor
-First, do cmsenv in CMSSW area where LLDJ framework is set up, and set options [https://github.com/DisplacedHiggs/Merger/blob/master/submitter/submitjobs.sh#L4-L8](here).
+First, do cmsenv in CMSSW area where LLDJ framework is set up, and set options [here](https://github.com/DisplacedHiggs/Merger/blob/master/submitter/submitjobs.sh#L4-L8).
 
 Then, 
 ```
