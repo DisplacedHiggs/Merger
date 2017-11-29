@@ -11,11 +11,10 @@ samples=(  \
 
 
 # tar up your present CMSSW area
-if [ ! -f ${CMSSW_VERSION}.tar.gz ] 
-then 
- printf "I think I need to tar, couldn't find ${CMSSW_VERSION}.tar.gz \n\n"
- tar --exclude-caches-all --exclude-vcs -zcf ${CMSSW_VERSION}.tar.gz -C ${CMSSW_BASE}/.. ${CMSSW_BASE} --exclude=src --exclude=tmp
-fi
+#if [ ! -f ${CMSSW_VERSION}.tar.gz ] 
+#then 
+#   tar --exclude-caches-all --exclude-vcs -zcf ${CMSSW_VERSION}.tar.gz -C ${CMSSW_BASE}/.. ${CMSSW_BASE} --exclude=src --exclude=tmp
+#fi
 
 
 makeasubmitdir () {
@@ -34,7 +33,7 @@ makeasubmitdir () {
  printf "Executable = ../runjob.sh\n" >> $submitfile
  printf "Should_Transfer_Files = YES \n" >> $submitfile
  printf "WhenToTransferOutput = ON_EXIT_OR_EVICT\n" >> $submitfile
- printf "Transfer_Input_Files = ../runjob.sh, ../../merger.C, ../${CMSSW_VERSION}.tar.gz\n" >> $submitfile
+ printf "Transfer_Input_Files = ../runjob.sh, ../../merger.C\n" >> $submitfile
  printf "Notification=Never\n" >> $submitfile
  printf "notify_user = $(whoami)@cern.ch\n" >> $submitfile
  printf "x509userproxy = $X509_USER_PROXY\n" >> $submitfile
