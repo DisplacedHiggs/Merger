@@ -295,13 +295,13 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
 
 
 
-void merger(TString miniaod_file_name){
+void merger(TString miniaod_file_name, TString aod_list_file_name){
 
   //////////////////////////////
   // List of AOD files
   //////////////////////////////
   std::vector<TString> aod_list;
-  std::ifstream input("DY50.list", std::ifstream::in);
+  std::ifstream input(aod_list_file_name, std::ifstream::in);
   TString aod_file_name;
   while(input>>aod_file_name){
     aod_file_name.Remove(0, 10);
