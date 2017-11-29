@@ -12,7 +12,7 @@ int current_open_file = -1;
 TFile * aod_file;
 
 //--new branches for merged tree
-vector<Long64_t> test;
+Bool_t         matched;
 Int_t          AODnCaloJet_;
 vector<float>  AODCaloJetPt_;
 vector<float>  AODCaloJetEta_;
@@ -241,8 +241,8 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
 
       aod_tree->GetEntry(j);
       
-      test.push_back(aod_event);
-      AODnCaloJet_=                               orig_AODnCaloJet_; 
+      matched=                                   true;
+      AODnCaloJet_=                              orig_AODnCaloJet_; 
       AODCaloJetPt_=                             *orig_AODCaloJetPt_;
       AODCaloJetEta_=                            *orig_AODCaloJetEta_;
       AODCaloJetPhi_=                            *orig_AODCaloJetPhi_;
@@ -339,51 +339,51 @@ void merger(TString miniaod_file_name){
   TTree *merged_tree = miniaod_tree->CloneTree();
 
   //New branches for merged tree
-  TBranch* b_test = merged_tree->Branch("TEST", "vector<Long64_t>", &test);
-  TBranch* b_1 = merged_tree->Branch("TEST_AODnCaloJet", &AODnCaloJet_);
-  TBranch* b_2 = merged_tree->Branch("TEST_AODCaloJetPt",  "vector<float>",                    &AODCaloJetPt_);
-  TBranch* b_3 = merged_tree->Branch("TEST_AODCaloJetEta", "vector<float>",                    &AODCaloJetEta_);
-  TBranch* b_4 = merged_tree->Branch("TEST_AODCaloJetPhi", "vector<float>",                    &AODCaloJetPhi_);
-  TBranch* b_5 = merged_tree->Branch("TEST_AODCaloJetAlphaMax", "vector<float>",               &AODCaloJetAlphaMax_);
-  TBranch* b_6 = merged_tree->Branch("TEST_AODCaloJetAlphaMax2", "vector<float>",              &AODCaloJetAlphaMax2_);                               
-  TBranch* b_7 = merged_tree->Branch("TEST_AODCaloJetAlphaMaxPrime", "vector<float>",          &AODCaloJetAlphaMaxPrime_);                               
-  TBranch* b_8 = merged_tree->Branch("TEST_AODCaloJetAlphaMaxPrime2", "vector<float>",         &AODCaloJetAlphaMaxPrime2_);                               
-  TBranch* b_9 = merged_tree->Branch("TEST_AODCaloJetBeta", "vector<float>",                   &AODCaloJetBeta_);                               
-  TBranch* b_10 = merged_tree->Branch("TEST_AODCaloJetBeta2", "vector<float>",                 &AODCaloJetBeta2_);                               
-  TBranch* b_11 = merged_tree->Branch("TEST_AODCaloJetSumIP", "vector<float>",                 &AODCaloJetSumIP_);
-  TBranch* b_12 = merged_tree->Branch("TEST_AODCaloJetSumIPSig", "vector<float>",              &AODCaloJetSumIPSig_);
-  TBranch* b_13 = merged_tree->Branch("TEST_AODCaloJetMedianIP", "vector<float>",              &AODCaloJetMedianIP_);
-  TBranch* b_14 = merged_tree->Branch("TEST_AODCaloJetMedianLog10IPSig", "vector<float>",      &AODCaloJetMedianLog10IPSig_);
-  TBranch* b_15 = merged_tree->Branch("TEST_AODCaloJetTrackAngle", "vector<float>",            &AODCaloJetTrackAngle_);
-  TBranch* b_16 = merged_tree->Branch("TEST_AODCaloJetLogTrackAngle", "vector<float>",         &AODCaloJetLogTrackAngle_);
-  TBranch* b_17 = merged_tree->Branch("TEST_AODCaloJetMedianLog10TrackAngle", "vector<float>", &AODCaloJetMedianLog10TrackAngle_);
-  TBranch* b_18 = merged_tree->Branch("TEST_AODCaloJetTotalTrackAngle", "vector<float>",       &AODCaloJetTotalTrackAngle_);
-  TBranch* b_19 = merged_tree->Branch("TEST_AODCaloJetAvfVx", "vector<float>",                     &AODCaloJetAvfVx_);
-  TBranch* b_20 = merged_tree->Branch("TEST_AODCaloJetAvfVy", "vector<float>",                     &AODCaloJetAvfVy_);
-  TBranch* b_21 = merged_tree->Branch("TEST_AODCaloJetAvfVz", "vector<float>",                     &AODCaloJetAvfVz_);
-  TBranch* b_22 = merged_tree->Branch("TEST_AODCaloJetAvfVertexTotalChiSquared", "vector<float>",  &AODCaloJetAvfVertexTotalChiSquared_);
-  TBranch* b_23 = merged_tree->Branch("TEST_AODCaloJetAvfVertexDegreesOfFreedom", "vector<float>", &AODCaloJetAvfVertexDegreesOfFreedom_);
-  TBranch* b_24 = merged_tree->Branch("TEST_AODCaloJetAvfVertexChi2NDoF", "vector<float>",         &AODCaloJetAvfVertexChi2NDoF_);
-  TBranch* b_25 = merged_tree->Branch("TEST_AODCaloJetAvfVertexDistanceToBeam", "vector<float>",   &AODCaloJetAvfVertexDistanceToBeam_);
-  TBranch* b_26 = merged_tree->Branch("TEST_AODCaloJetAvfVertexTransverseError", "vector<float>",  &AODCaloJetAvfVertexTransverseError_);
-  TBranch* b_27 = merged_tree->Branch("TEST_AODCaloJetAvfVertexTransverseSig", "vector<float>",    &AODCaloJetAvfVertexTransverseSig_);
-  TBranch* b_28 = merged_tree->Branch("TEST_AODCaloJetAvfVertexDeltaEta", "vector<float>",         &AODCaloJetAvfVertexDeltaEta_);
-  TBranch* b_29 = merged_tree->Branch("TEST_AODCaloJetAvfVertexDeltaPhi", "vector<float>",         &AODCaloJetAvfVertexDeltaPhi_);
-  TBranch* b_30 = merged_tree->Branch("TEST_AODCaloJetAvfVertexRecoilPt", "vector<float>",         &AODCaloJetAvfVertexRecoilPt_);
-  TBranch* b_31 = merged_tree->Branch("TEST_AODCaloJetAvfVertexTrackMass", "vector<float>",        &AODCaloJetAvfVertexTrackMass_);
-  TBranch* b_32 = merged_tree->Branch("TEST_AODCaloJetAvfVertexTrackEnergy", "vector<float>",      &AODCaloJetAvfVertexTrackEnergy_);
-  TBranch* b_33 = merged_tree->Branch("TEST_AODCaloJetAvfBeamSpotDeltaPhi", "vector<float>",       &AODCaloJetAvfBeamSpotDeltaPhi_);
-  TBranch* b_34 = merged_tree->Branch("TEST_AODCaloJetAvfBeamSpotRecoilPt", "vector<float>",       &AODCaloJetAvfBeamSpotRecoilPt_);
-  TBranch* b_35 = merged_tree->Branch("TEST_AODCaloJetAvfBeamSpotMedianDeltaPhi", "vector<float>",       &AODCaloJetAvfBeamSpotMedianDeltaPhi_);
-  TBranch* b_36 = merged_tree->Branch("TEST_AODCaloJetAvfBeamSpotLog10MedianDeltaPhi", "vector<float>",  &AODCaloJetAvfBeamSpotLog10MedianDeltaPhi_);
-  TBranch* b_37 = merged_tree->Branch("TEST_AODCaloJetNCleanMatchedTracks", "vector<int>",               &AODCaloJetNCleanMatchedTracks_);
-  TBranch* b_38 = merged_tree->Branch("TEST_AODCaloJetSumHitsInFrontOfVert", "vector<int>",              &AODCaloJetSumHitsInFrontOfVert_);
-  TBranch* b_39 = merged_tree->Branch("TEST_AODCaloJetSumMissHitsAfterVert", "vector<int>",              &AODCaloJetSumMissHitsAfterVert_);
-  TBranch* b_40 = merged_tree->Branch("TEST_AODCaloJetHitsInFrontOfVertPerTrack", "vector<int>",         &AODCaloJetHitsInFrontOfVertPerTrack_);
-  TBranch* b_41 = merged_tree->Branch("TEST_AODCaloJetMissHitsAfterVertPerTrack", "vector<int>",         &AODCaloJetMissHitsAfterVertPerTrack_);
-  TBranch* b_42 = merged_tree->Branch("TEST_AODCaloJetAvfDistToPV", "vector<float>",                     &AODCaloJetAvfDistToPV_);
-  TBranch* b_43 = merged_tree->Branch("TEST_AODCaloJetAvfVertexDeltaZtoPV", "vector<float>",             &AODCaloJetAvfVertexDeltaZtoPV_);
-  TBranch* b_44 = merged_tree->Branch("TEST_AODCaloJetAvfVertexDeltaZtoPV2", "vector<float>",            &AODCaloJetAvfVertexDeltaZtoPV2_);
+  TBranch* b_0 = merged_tree->Branch("AOD_matched", &matched);
+  TBranch* b_1 = merged_tree->Branch("AOD_AODnCaloJet", &AODnCaloJet_);
+  TBranch* b_2 = merged_tree->Branch("AOD_AODCaloJetPt",  "vector<float>",                    &AODCaloJetPt_);
+  TBranch* b_3 = merged_tree->Branch("AOD_AODCaloJetEta", "vector<float>",                    &AODCaloJetEta_);
+  TBranch* b_4 = merged_tree->Branch("AOD_AODCaloJetPhi", "vector<float>",                    &AODCaloJetPhi_);
+  TBranch* b_5 = merged_tree->Branch("AOD_AODCaloJetAlphaMax", "vector<float>",               &AODCaloJetAlphaMax_);
+  TBranch* b_6 = merged_tree->Branch("AOD_AODCaloJetAlphaMax2", "vector<float>",              &AODCaloJetAlphaMax2_);                               
+  TBranch* b_7 = merged_tree->Branch("AOD_AODCaloJetAlphaMaxPrime", "vector<float>",          &AODCaloJetAlphaMaxPrime_);                               
+  TBranch* b_8 = merged_tree->Branch("AOD_AODCaloJetAlphaMaxPrime2", "vector<float>",         &AODCaloJetAlphaMaxPrime2_);                               
+  TBranch* b_9 = merged_tree->Branch("AOD_AODCaloJetBeta", "vector<float>",                   &AODCaloJetBeta_);                               
+  TBranch* b_10 = merged_tree->Branch("AOD_AODCaloJetBeta2", "vector<float>",                 &AODCaloJetBeta2_);                               
+  TBranch* b_11 = merged_tree->Branch("AOD_AODCaloJetSumIP", "vector<float>",                 &AODCaloJetSumIP_);
+  TBranch* b_12 = merged_tree->Branch("AOD_AODCaloJetSumIPSig", "vector<float>",              &AODCaloJetSumIPSig_);
+  TBranch* b_13 = merged_tree->Branch("AOD_AODCaloJetMedianIP", "vector<float>",              &AODCaloJetMedianIP_);
+  TBranch* b_14 = merged_tree->Branch("AOD_AODCaloJetMedianLog10IPSig", "vector<float>",      &AODCaloJetMedianLog10IPSig_);
+  TBranch* b_15 = merged_tree->Branch("AOD_AODCaloJetTrackAngle", "vector<float>",            &AODCaloJetTrackAngle_);
+  TBranch* b_16 = merged_tree->Branch("AOD_AODCaloJetLogTrackAngle", "vector<float>",         &AODCaloJetLogTrackAngle_);
+  TBranch* b_17 = merged_tree->Branch("AOD_AODCaloJetMedianLog10TrackAngle", "vector<float>", &AODCaloJetMedianLog10TrackAngle_);
+  TBranch* b_18 = merged_tree->Branch("AOD_AODCaloJetTotalTrackAngle", "vector<float>",       &AODCaloJetTotalTrackAngle_);
+  TBranch* b_19 = merged_tree->Branch("AOD_AODCaloJetAvfVx", "vector<float>",                     &AODCaloJetAvfVx_);
+  TBranch* b_20 = merged_tree->Branch("AOD_AODCaloJetAvfVy", "vector<float>",                     &AODCaloJetAvfVy_);
+  TBranch* b_21 = merged_tree->Branch("AOD_AODCaloJetAvfVz", "vector<float>",                     &AODCaloJetAvfVz_);
+  TBranch* b_22 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTotalChiSquared", "vector<float>",  &AODCaloJetAvfVertexTotalChiSquared_);
+  TBranch* b_23 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDegreesOfFreedom", "vector<float>", &AODCaloJetAvfVertexDegreesOfFreedom_);
+  TBranch* b_24 = merged_tree->Branch("AOD_AODCaloJetAvfVertexChi2NDoF", "vector<float>",         &AODCaloJetAvfVertexChi2NDoF_);
+  TBranch* b_25 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDistanceToBeam", "vector<float>",   &AODCaloJetAvfVertexDistanceToBeam_);
+  TBranch* b_26 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTransverseError", "vector<float>",  &AODCaloJetAvfVertexTransverseError_);
+  TBranch* b_27 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTransverseSig", "vector<float>",    &AODCaloJetAvfVertexTransverseSig_);
+  TBranch* b_28 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaEta", "vector<float>",         &AODCaloJetAvfVertexDeltaEta_);
+  TBranch* b_29 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaPhi", "vector<float>",         &AODCaloJetAvfVertexDeltaPhi_);
+  TBranch* b_30 = merged_tree->Branch("AOD_AODCaloJetAvfVertexRecoilPt", "vector<float>",         &AODCaloJetAvfVertexRecoilPt_);
+  TBranch* b_31 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTrackMass", "vector<float>",        &AODCaloJetAvfVertexTrackMass_);
+  TBranch* b_32 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTrackEnergy", "vector<float>",      &AODCaloJetAvfVertexTrackEnergy_);
+  TBranch* b_33 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotDeltaPhi", "vector<float>",       &AODCaloJetAvfBeamSpotDeltaPhi_);
+  TBranch* b_34 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotRecoilPt", "vector<float>",       &AODCaloJetAvfBeamSpotRecoilPt_);
+  TBranch* b_35 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotMedianDeltaPhi", "vector<float>",       &AODCaloJetAvfBeamSpotMedianDeltaPhi_);
+  TBranch* b_36 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotLog10MedianDeltaPhi", "vector<float>",  &AODCaloJetAvfBeamSpotLog10MedianDeltaPhi_);
+  TBranch* b_37 = merged_tree->Branch("AOD_AODCaloJetNCleanMatchedTracks", "vector<int>",               &AODCaloJetNCleanMatchedTracks_);
+  TBranch* b_38 = merged_tree->Branch("AOD_AODCaloJetSumHitsInFrontOfVert", "vector<int>",              &AODCaloJetSumHitsInFrontOfVert_);
+  TBranch* b_39 = merged_tree->Branch("AOD_AODCaloJetSumMissHitsAfterVert", "vector<int>",              &AODCaloJetSumMissHitsAfterVert_);
+  TBranch* b_40 = merged_tree->Branch("AOD_AODCaloJetHitsInFrontOfVertPerTrack", "vector<int>",         &AODCaloJetHitsInFrontOfVertPerTrack_);
+  TBranch* b_41 = merged_tree->Branch("AOD_AODCaloJetMissHitsAfterVertPerTrack", "vector<int>",         &AODCaloJetMissHitsAfterVertPerTrack_);
+  TBranch* b_42 = merged_tree->Branch("AOD_AODCaloJetAvfDistToPV", "vector<float>",                     &AODCaloJetAvfDistToPV_);
+  TBranch* b_43 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaZtoPV", "vector<float>",             &AODCaloJetAvfVertexDeltaZtoPV_);
+  TBranch* b_44 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaZtoPV2", "vector<float>",            &AODCaloJetAvfVertexDeltaZtoPV2_);
    
 
   /////////////////////////////
@@ -396,7 +396,7 @@ void merger(TString miniaod_file_name){
     miniaod_tree->GetEntry(i);
   
     //Clear new branches for merged tree
-    test.clear();
+    matched=false;
     AODnCaloJet_=0;
     AODCaloJetPt_.clear();
     AODCaloJetEta_.clear();
@@ -445,54 +445,52 @@ void merger(TString miniaod_file_name){
     //Find aod
     int success = find_aod(aod_list, start_suggest, miniaod_run, miniaod_event);
     
-    //Fill new branches
-    if(success){
-      b_test->Fill();
-      b_1->Fill();
-      b_2->Fill();
-      b_3->Fill();
-      b_4->Fill();
-      b_5->Fill();
-      b_6->Fill();
-      b_7->Fill();
-      b_8->Fill();
-      b_9->Fill();
-      b_10->Fill();
-      b_11->Fill();
-      b_12->Fill();
-      b_13->Fill();
-      b_14->Fill();
-      b_15->Fill();
-      b_16->Fill();
-      b_17->Fill();
-      b_18->Fill();
-      b_19->Fill();
-      b_20->Fill();
-      b_21->Fill();
-      b_22->Fill();
-      b_23->Fill();
-      b_24->Fill();
-      b_25->Fill();
-      b_26->Fill();
-      b_27->Fill();
-      b_28->Fill();
-      b_29->Fill();
-      b_30->Fill();
-      b_31->Fill();
-      b_32->Fill();
-      b_33->Fill();
-      b_34->Fill();
-      b_35->Fill();
-      b_36->Fill();
-      b_37->Fill();
-      b_38->Fill();
-      b_39->Fill();
-      b_40->Fill();
-      b_41->Fill();
-      b_42->Fill();
-      b_43->Fill();
-      b_44->Fill();
-    }
+    b_0->Fill();
+    b_1->Fill();
+    b_2->Fill();
+    b_3->Fill();
+    b_4->Fill();
+    b_5->Fill();
+    b_6->Fill();
+    b_7->Fill();
+    b_8->Fill();
+    b_9->Fill();
+    b_10->Fill();
+    b_11->Fill();
+    b_12->Fill();
+    b_13->Fill();
+    b_14->Fill();
+    b_15->Fill();
+    b_16->Fill();
+    b_17->Fill();
+    b_18->Fill();
+    b_19->Fill();
+    b_20->Fill();
+    b_21->Fill();
+    b_22->Fill();
+    b_23->Fill();
+    b_24->Fill();
+    b_25->Fill();
+    b_26->Fill();
+    b_27->Fill();
+    b_28->Fill();
+    b_29->Fill();
+    b_30->Fill();
+    b_31->Fill();
+    b_32->Fill();
+    b_33->Fill();
+    b_34->Fill();
+    b_35->Fill();
+    b_36->Fill();
+    b_37->Fill();
+    b_38->Fill();
+    b_39->Fill();
+    b_40->Fill();
+    b_41->Fill();
+    b_42->Fill();
+    b_43->Fill();
+    b_44->Fill();
+    
   }
 
   merged_file->Write();

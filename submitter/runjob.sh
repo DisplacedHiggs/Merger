@@ -24,17 +24,23 @@ cd CMSSW_8_0_26_patch2/src
 eval `scramv1 runtime -sh` # cmsenv
 cd -
 
+argument_counter=0
 for var in "$@"
 do
-    #echo "$var"
-    #For now, inputs are accessed from EOS directly, not xrdcp'ed
-    root -l -b -q "merger.C+(\"$var\")"
 
-    for f in merged_*.root; do
-	xrdcp $f root://cmseos.fnal.gov//store/user/lpchbb/LLDJntuples/merged/$f #FIXME remove hardcoding
-	rm merged_*.root
-    done
+    if [ $argument_counter -eq 0 ]
+    then
+	argument_counter=1
+    else
+        #echo "$var"
+        #For now, inputs are accessed from EOS directly, not xrdcp'ed
+	root -l -b -q "merger.C+(\"$var\")"
 
+	for f in merged_*.root; do
+	    xrdcp $f $1/$f 
+	    rm merged_*.root
+	done
+    fi
 done
 
 echo "Inside $MAINDIR:"

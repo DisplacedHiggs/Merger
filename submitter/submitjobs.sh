@@ -3,7 +3,7 @@
 
 doSubmit=false
 maxfilesperjob=3 
-
+outdir=root://cmseos.fnal.gov//store/user/lpchbb/LLDJntuples/merged
 
 samples=(  \
  "DY50"                               \
@@ -20,11 +20,12 @@ samples=(  \
 makeasubmitdir () {
  printf "Making submits for $1\n"
  
- # go to the directory
+ #Make output stuff 
  submitdir="submitdir"
  mkdir -p ${submitdir}/$1
- 
- mkdir -p ${submitdir}/logs
+ mkdir -p ${submitdir}/$1/logs
+
+ outdir=${outdir}/$1
 
  submitfile=${submitdir}/submit_$1.condor 
  
@@ -33,13 +34,13 @@ makeasubmitdir () {
  printf "Executable = ../runjob.sh\n" >> $submitfile
  printf "Should_Transfer_Files = YES \n" >> $submitfile
  printf "WhenToTransferOutput = ON_EXIT_OR_EVICT\n" >> $submitfile
- printf "Transfer_Input_Files = ../runjob.sh, ../../merger.C\n" >> $submitfile
+ printf "Transfer_Input_Files = ../runjob.sh, ../../merger.C, ${CMSSW_BASE}/src/LLDJstandalones/lists/$1.list\n" >> $submitfile
  printf "Notification=Never\n" >> $submitfile
  printf "notify_user = $(whoami)@cern.ch\n" >> $submitfile
  printf "x509userproxy = $X509_USER_PROXY\n" >> $submitfile
- printf "Output = logs/merger_\$(Cluster)_\$(Process).stdout\n" >> $submitfile
- printf "Error  = logs/merger_\$(Cluster)_\$(Process).stderr\n" >> $submitfile
- printf "Log    = logs/merger_\$(Cluster)_\$(Process).log\n" >> $submitfile
+ printf "Output = $1/logs/merger_\$(Cluster)_\$(Process).stdout\n" >> $submitfile
+ printf "Error  = $1/logs/merger_\$(Cluster)_\$(Process).stderr\n" >> $submitfile
+ printf "Log    = $1/logs/merger_\$(Cluster)_\$(Process).log\n" >> $submitfile
  printf "\n" >> $submitfile
  
  split_count=0
@@ -53,7 +54,7 @@ makeasubmitdir () {
 	 files="$files $p"
 	 split_count=$((split_count+1))
      else
-	 printf "Arguments = ${files}\n" >> $submitfile
+	 printf "Arguments = ${outdir} ${files}\n" >> $submitfile
 	 printf "Queue\n" >> $submitfile
 	 printf "\n" >> $submitfile
 	 files=""
