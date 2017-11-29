@@ -25,17 +25,17 @@ makeasubmitdir () {
  submitdir="submitdir"
  mkdir -p ${submitdir}/$1
  
- mkdir -p logs
+ mkdir -p ${submitdir}/logs
 
  submitfile=${submitdir}/submit_$1.condor 
  
  # write base for submit file
  printf "universe = vanilla\n" > $submitfile
- printf "Executable = runjob.sh\n" >> $submitfile
+ printf "Executable = ../runjob.sh\n" >> $submitfile
  printf "Should_Transfer_Files = YES \n" >> $submitfile
  printf "WhenToTransferOutput = ON_EXIT_OR_EVICT\n" >> $submitfile
- printf "Transfer_Input_Files = runjob.sh, merger.C, ${CMSSW_BASE}/src/LLDJstandalones/submitters/${CMSSW_VERSION}.tar.gz\n" >> $submitfile
- printf "Notification=never" >> $submitfile
+ printf "Transfer_Input_Files = ../runjob.sh, ../../merger.C, ../${CMSSW_VERSION}.tar.gz\n" >> $submitfile
+ printf "Notification=Never\n" >> $submitfile
  printf "notify_user = $(whoami)@cern.ch\n" >> $submitfile
  printf "x509userproxy = $X509_USER_PROXY\n" >> $submitfile
  printf "Output = logs/merger_\$(Cluster)_\$(Process).stdout\n" >> $submitfile

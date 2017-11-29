@@ -16,3 +16,6 @@ Then,
 cd submitter
 bash submitjobs.sh
 ```
+
+## Notes
+At least for now, inputs are opened from EOS directly rather than xrdcp'ed to worker nodes.  

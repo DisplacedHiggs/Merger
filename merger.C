@@ -312,6 +312,11 @@ void merger(TString miniaod_file_name){
   //////////////////////////////
   // MiniAOD
   //////////////////////////////
+
+  //Formatting
+  miniaod_file_name.Remove(0, 10);
+  miniaod_file_name = "root://cmseos.fnal.gov://" + miniaod_file_name;
+
   TFile *miniaod_file = TFile::Open(miniaod_file_name, "READ");
   if(miniaod_file->IsZombie()){
     cout << "miniaod_file is zombie" << endl;
@@ -328,7 +333,9 @@ void merger(TString miniaod_file_name){
   /////////////////////////////
   // Merged output
   /////////////////////////////
-  TFile *merged_file = TFile::Open("merged.root", "RECREATE");
+  TString outfile_name = "merged_";
+  outfile_name = outfile_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
+  TFile *merged_file = TFile::Open(outfile_name, "RECREATE");
   TTree *merged_tree = miniaod_tree->CloneTree();
 
   //New branches for merged tree

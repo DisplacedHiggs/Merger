@@ -16,10 +16,14 @@ cd -
 
 for var in "$@"
 do
-    echo "$var"
-    #xrdcp
+    #echo "$var"
+    #For now, inputs are accessed from EOS directly, not xrdcp'ed
     root -l -b -q "merger.C+(\"$var\")"
-    #xrdcp
+
+    for f in merged_*.root; do
+	xrdcp $f root://cmseos.fnal.gov//store/user/lpchbb/LLDJntuples/merged/$f #FIXME remove hardcoding
+    done
+
 done
 
 echo "Inside $MAINDIR:"
