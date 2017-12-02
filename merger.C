@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "TFile.h"
+#include "TH1F.h"
 #include "TTree.h"
 
 using namespace std;
@@ -94,7 +95,7 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
     
     //Loop through AOD tree
     Long64_t nentries = aod_tree->GetEntries();
-    for (Long64_t j = 0; j < nentries; j++) {
+    for(Long64_t j = 0; j < nentries; j++) {
       aod_tree->GetEntry(j);
       
       if(aod_run != mini_run) continue;
@@ -322,7 +323,8 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
     cout << "miniaod_file is zombie" << endl;
     return;
   }
-  TTree *miniaod_tree = (TTree*)miniaod_file->Get("lldjNtuple/EventTree");
+  TH1F* hEvents = (TH1F*)miniaod_file->Get("lldjNtuple/hEvents");
+  TTree* miniaod_tree = (TTree*)miniaod_file->Get("lldjNtuple/EventTree");
 
   int miniaod_run;
   Long64_t miniaod_event;
@@ -390,7 +392,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   // Loop over MiniAOD
   /////////////////////////////
   Long64_t nentries = miniaod_tree->GetEntries();
-  for (Long64_t i = 0; i < nentries; i++) {
+  for(Long64_t i = 0; i < nentries; i++) {
     if(i%1000==0) cout << i << "/" << nentries << endl;
 
     miniaod_tree->GetEntry(i);
@@ -493,7 +495,10 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
     
   }
 
+  merged_file->cd();
+  hEvents->Write();
   merged_file->Write();
+  aod_file->Close();
   merged_file->Close();
   miniaod_file->Close();
   delete merged_file;
