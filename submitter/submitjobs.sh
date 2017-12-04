@@ -2,10 +2,10 @@
 
 
 doSubmit=false
-maxfilesperjob=3 
+maxfilesperjob=1
 outdir=root://cmseos.fnal.gov//store/user/lpchbb/LLDJntuples/merged
-AOD_LIST_LOCATION=${CMSSW_BASE}/src/LLDJstandalones/lists/
-MINIAOD_LIST_LOCATION=${CMSSW_BASE}/src/LLDJstandalones/lists/
+AOD_LIST_LOCATION=/uscms_data/d2/kreis/LLDJ/20171117_sort/Merger/submitter/lists/aod/
+MINIAOD_LIST_LOCATION=/uscms_data/d2/kreis/LLDJ/20171117_sort/Merger/submitter/lists/miniaod/
 
 samples=(  \
  "DY50"                               \
@@ -59,11 +59,16 @@ makeasubmitdir () {
 	 printf "Arguments = ${outdir} ${files}\n" >> $submitfile
 	 printf "Queue\n" >> $submitfile
 	 printf "\n" >> $submitfile
-	 files=""
-	 split_count=0
-     fi
-     
+	 files="$p"
+	 split_count=1
+     fi     
+
  done <${MINIAOD_LIST_LOCATION}/$1.list
+
+ printf "Arguments = ${outdir} ${files}\n" >> $submitfile
+ printf "Queue\n" >> $submitfile
+ printf "\n" >> $submitfile
+
  
  if [ ${doSubmit} = true ]
  then
