@@ -26,20 +26,32 @@ cd CMSSW_8_0_26_patch2/src
 eval `scramv1 runtime -sh` # cmsenv
 cd -
 
+
+echo "var print: " 
+for var in "$@"
+do
+    echo $var
+done 
+echo "$0"
+echo "$1"
+echo "$2"
+
 argument_counter=0
 for var in "$@"
 do
 
-    if [ $argument_counter -eq 0 ]
+    if [ $argument_counter -lt 2 ]
     then
-	argument_counter=1
+	((argument_counter++))
+	#argument_counter=$argument_counter+1
+	echo "$var skipped for running"
     else
-        #echo "$var"
+        echo "$var running"
         #For now, inputs are accessed from EOS directly, not xrdcp'ed
 	root -l -b -q "merger.C+(\"$var\",\"$1.list\")"
 
 	for f in merged_*.root; do
-	    xrdcp $f $1/$f 
+	    xrdcp $f $2/$f 
 	    rm merged_*.root
 	done
     fi

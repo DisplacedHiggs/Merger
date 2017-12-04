@@ -8,7 +8,7 @@ AOD_LIST_LOCATION=/uscms_data/d2/kreis/LLDJ/20171117_sort/Merger/submitter/lists
 MINIAOD_LIST_LOCATION=/uscms_data/d2/kreis/LLDJ/20171117_sort/Merger/submitter/lists/miniaod/
 
 samples=(  \
- "DY50"                               \
+ "DY50_1"                               \
 )
 
 
@@ -56,7 +56,7 @@ makeasubmitdir () {
 	 files="$files $p"
 	 split_count=$((split_count+1))
      else
-	 printf "Arguments = ${outdir} ${files}\n" >> $submitfile
+	 printf "Arguments = $1 ${outdir} ${files}\n" >> $submitfile
 	 printf "Queue\n" >> $submitfile
 	 printf "\n" >> $submitfile
 	 files="$p"
@@ -65,7 +65,7 @@ makeasubmitdir () {
 
  done <${MINIAOD_LIST_LOCATION}/$1.list
 
- printf "Arguments = ${outdir} ${files}\n" >> $submitfile
+ printf "Arguments = $1 ${outdir} ${files}\n" >> $submitfile
  printf "Queue\n" >> $submitfile
  printf "\n" >> $submitfile
 

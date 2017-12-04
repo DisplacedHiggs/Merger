@@ -84,6 +84,10 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
     
     //Only get what you need from AOD file
     TTree *aod_tree = (TTree*)aod_file->Get("lldjNtuple/EventTree");
+    if(aod_tree->IsZombie()){
+      cout << "aod_tree is zombie" << endl;
+      return 0;
+    }
     aod_tree->SetBranchStatus("*",     0);
     aod_tree->SetBranchStatus("run",   1);
     aod_tree->SetBranchStatus("event", 1);
@@ -298,6 +302,10 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
 
 void merger(TString miniaod_file_name, TString aod_list_file_name){
 
+  cout << "Running merger with arguments: " << endl;
+  cout << "miniaod_file_name: " << miniaod_file_name << endl;
+  cout << "aod_list_file_name: " << aod_list_file_name << endl;
+
   //////////////////////////////
   // List of AOD files
   //////////////////////////////
@@ -308,6 +316,8 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
     aod_file_name.Remove(0, 10);
     aod_list.push_back(aod_file_name);
   }
+  cout << "AOD file list size: " << aod_list.size() << endl;
+
   unsigned int start_suggest = 0;
 
   //////////////////////////////
@@ -394,6 +404,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   Long64_t nentries = miniaod_tree->GetEntries();
   for(Long64_t i = 0; i < nentries; i++) {
     if(i%1000==0) cout << i << "/" << nentries << endl;
+    if(i>100) break;
 
     miniaod_tree->GetEntry(i);
   
