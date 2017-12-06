@@ -5,7 +5,7 @@
 ```
 root -l
 .L merger.C++
-merger("/eos/uscms/store/group/lpchbb/LLDJntuples/splot/ZH_HToSSTobbbb_ZToLL_MH-125_MS-40_ctauS-10_TuneCUETP8M1_13TeV-powheg-pythia8/crab_ZH_HToSSTobbbb_MS-40_ctauS-10/171127_091316/0000/lldjntuple_mc_miniAOD_1.root", "aod.list")
+merger("/eos/uscms/store/group/lpchbb/LLDJntuples/splot/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_DY50_1/171127_101103/0000/lldjntuple_mc_miniAOD_1.root", "aod.list")
 ```
 
 ## With condor
