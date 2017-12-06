@@ -402,7 +402,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   }
   TH1F* hEvents = (TH1F*)miniaod_file->Get("lldjNtuple/hEvents");
   TTree* miniaod_tree = (TTree*)miniaod_file->Get("lldjNtuple/EventTree");
-
+  miniaod_tree->SetName("MINIAOD_TREE");
   
   /////////////////////////////
   // Merged output
