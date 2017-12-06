@@ -296,6 +296,8 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
 
       aod_tree->GetEntry(j);
       
+      cout << "orig_AODnCaloJet_ " << orig_AODnCaloJet_ << endl;
+
       matched=                                   true;
       AODRun_=                                   aod_run;
       AODEvent_=                                 aod_event;
@@ -400,11 +402,6 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   TH1F* hEvents = (TH1F*)miniaod_file->Get("lldjNtuple/hEvents");
   TTree* miniaod_tree = (TTree*)miniaod_file->Get("lldjNtuple/EventTree");
 
-  int miniaod_run;
-  Long64_t miniaod_event;
-  miniaod_tree->SetBranchAddress("run", &miniaod_run);
-  miniaod_tree->SetBranchAddress("event", &miniaod_event);
-
   
   /////////////////////////////
   // Merged output
@@ -413,6 +410,11 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   outfile_name = outfile_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
   TFile *merged_file = TFile::Open(outfile_name, "RECREATE");
   TTree *merged_tree = miniaod_tree->CloneTree();
+
+  int merged_run;
+  Long64_t merged_event;
+  merged_tree->SetBranchAddress("run", &merged_run);
+  merged_tree->SetBranchAddress("event", &merged_event);
 
   //New branches for merged tree
   TBranch* b_0 = merged_tree->Branch("AOD_matched",                                           &matched);
@@ -477,7 +479,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
    
 
   /////////////////////////////
-  // Loop over MiniAOD
+  // Loop over merged tree
   /////////////////////////////
   Long64_t nentries = merged_tree->GetEntries();
   for(Long64_t i = 0; i < nentries; i++) {
@@ -546,11 +548,11 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
     AODCaloJetAvfVertexDeltaZtoPV_.clear();
     AODCaloJetAvfVertexDeltaZtoPV2_.clear();
 
-    if(i>=100) break;
+    if(i==100) break;
     if(verbose) cout << "About to search for AOD matching entry " << i << endl;
 
     //Find aod
-    int success = find_aod(aod_list, start_suggest, miniaod_run, miniaod_event);
+    int success = find_aod(aod_list, start_suggest, merged_run, merged_event);
     
     b_0->Fill();
     b_1->Fill();
