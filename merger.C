@@ -8,12 +8,26 @@
 using namespace std;
 
 //Global stuff
-bool verbose = false;
+bool verbose = true;
 int current_open_file = -1;
 TFile * aod_file;
 
 //--new branches for merged tree
 Bool_t         matched;
+Int_t          AODRun_;
+Long64_t       AODEvent_;
+vector<int>    AODllpId_;
+vector<int>    AODllpStatus_;
+vector<float>  AODllpPt_;
+vector<float>  AODllpEta_;
+vector<float>  AODllpPhi_;
+vector<float>  AODllpMass_;
+vector<int>    AODllpDaughterId_;
+vector<int>    AODllpDaughterStatus_;
+vector<float>  AODllpDaughterPt_;
+vector<float>  AODllpDaughterEta_;
+vector<float>  AODllpDaughterPhi_;
+vector<float>  AODllpDaughterMass_;
 Int_t          AODnCaloJet_;
 vector<float>  AODCaloJetPt_;
 vector<float>  AODCaloJetEta_;
@@ -106,10 +120,22 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
       if(aod_event != mini_event) continue;
 
       //Matched!
-      if(verbose) cout << "Found match --  " << aod_list[f] << endl;
+      if(verbose) cout << "Found match: File = " << aod_list[f] << ", " << aod_run << " " << mini_run << " " << aod_event << " " << mini_event << endl;
       start_suggest = f;
 
       //Now get everything
+      aod_tree->SetBranchStatus("llpId", 1); 
+      aod_tree->SetBranchStatus("llpStatus", 1); 
+      aod_tree->SetBranchStatus("llpPt", 1);     
+      aod_tree->SetBranchStatus("llpEta", 1);    
+      aod_tree->SetBranchStatus("llpPhi", 1);    
+      aod_tree->SetBranchStatus("llpMass", 1);   
+      aod_tree->SetBranchStatus("llpDaughterId", 1);     
+      aod_tree->SetBranchStatus("llpDaughterStatus", 1);
+      aod_tree->SetBranchStatus("llpDaughterPt", 1);    
+      aod_tree->SetBranchStatus("llpDaughterEta", 1);   
+      aod_tree->SetBranchStatus("llpDaughterPhi", 1);   
+      aod_tree->SetBranchStatus("llpDaughterMass", 1);  
       aod_tree->SetBranchStatus("AODnCaloJet", 1);
       aod_tree->SetBranchStatus("AODCaloJetPt", 1);
       aod_tree->SetBranchStatus("AODCaloJetEta", 1);
@@ -155,7 +181,19 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
       aod_tree->SetBranchStatus("AODCaloJetAvfVertexDeltaZtoPV", 1);
       aod_tree->SetBranchStatus("AODCaloJetAvfVertexDeltaZtoPV2", 1);
 
-      Int_t          orig_AODnCaloJet_ = 0;
+      vector<int>    *orig_AODllpId_ = new std::vector<int>();
+      vector<int>    *orig_AODllpStatus_ = new std::vector<int>();
+      vector<float>  *orig_AODllpPt_ = new std::vector<float>();
+      vector<float>  *orig_AODllpEta_ = new std::vector<float>();
+      vector<float>  *orig_AODllpPhi_ = new std::vector<float>();
+      vector<float>  *orig_AODllpMass_ = new std::vector<float>();
+      vector<int>    *orig_AODllpDaughterId_ = new std::vector<int>();
+      vector<int>    *orig_AODllpDaughterStatus_ = new std::vector<int>();
+      vector<float>  *orig_AODllpDaughterPt_ = new std::vector<float>();
+      vector<float>  *orig_AODllpDaughterEta_ = new std::vector<float>();
+      vector<float>  *orig_AODllpDaughterPhi_ = new std::vector<float>();
+      vector<float>  *orig_AODllpDaughterMass_ = new std::vector<float>();
+      Int_t           orig_AODnCaloJet_ = -1;
       vector<float>  *orig_AODCaloJetPt_ = new std::vector<float>();
       vector<float>  *orig_AODCaloJetEta_ = new std::vector<float>();
       vector<float>  *orig_AODCaloJetPhi_ = new std::vector<float>();
@@ -199,16 +237,28 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
       vector<float>  *orig_AODCaloJetAvfDistToPV_ = new std::vector<float>();
       vector<float>  *orig_AODCaloJetAvfVertexDeltaZtoPV_ = new std::vector<float>();
       vector<float>  *orig_AODCaloJetAvfVertexDeltaZtoPV2_ = new std::vector<float>();
+      aod_tree->SetBranchAddress("llpId",              &orig_AODllpId_);
+      aod_tree->SetBranchAddress("llpStatus",          &orig_AODllpStatus_);
+      aod_tree->SetBranchAddress("llpPt",              &orig_AODllpPt_);
+      aod_tree->SetBranchAddress("llpEta",             &orig_AODllpEta_);
+      aod_tree->SetBranchAddress("llpPhi",             &orig_AODllpPhi_);
+      aod_tree->SetBranchAddress("llpMass",            &orig_AODllpMass_);
+      aod_tree->SetBranchAddress("llpDaughterId",      &orig_AODllpDaughterId_);
+      aod_tree->SetBranchAddress("llpDaughterStatus",  &orig_AODllpDaughterStatus_);
+      aod_tree->SetBranchAddress("llpDaughterPt",      &orig_AODllpDaughterPt_);
+      aod_tree->SetBranchAddress("llpDaughterEta",     &orig_AODllpDaughterEta_);
+      aod_tree->SetBranchAddress("llpDaughterPhi",     &orig_AODllpDaughterPhi_);
+      aod_tree->SetBranchAddress("llpDaughterMass",    &orig_AODllpDaughterMass_);
       aod_tree->SetBranchAddress("AODnCaloJet",                                 &orig_AODnCaloJet_);
       aod_tree->SetBranchAddress("AODCaloJetPt",                                &orig_AODCaloJetPt_);
       aod_tree->SetBranchAddress("AODCaloJetEta",                               &orig_AODCaloJetEta_);
       aod_tree->SetBranchAddress("AODCaloJetPhi",                               &orig_AODCaloJetPhi_);
-      aod_tree->SetBranchAddress("AODCaloJetAlphaMax",                          &orig_AODCaloJetAlphaMax_);                               
-      aod_tree->SetBranchAddress("AODCaloJetAlphaMax2",                         &orig_AODCaloJetAlphaMax2_);                               
-      aod_tree->SetBranchAddress("AODCaloJetAlphaMaxPrime",                     &orig_AODCaloJetAlphaMaxPrime_);                               
-      aod_tree->SetBranchAddress("AODCaloJetAlphaMaxPrime2",                    &orig_AODCaloJetAlphaMaxPrime2_);                               
-      aod_tree->SetBranchAddress("AODCaloJetBeta",                              &orig_AODCaloJetBeta_);                               
-      aod_tree->SetBranchAddress("AODCaloJetBeta2",                             &orig_AODCaloJetBeta2_);                               
+      aod_tree->SetBranchAddress("AODCaloJetAlphaMax",                          &orig_AODCaloJetAlphaMax_);
+      aod_tree->SetBranchAddress("AODCaloJetAlphaMax2",                         &orig_AODCaloJetAlphaMax2_);
+      aod_tree->SetBranchAddress("AODCaloJetAlphaMaxPrime",                     &orig_AODCaloJetAlphaMaxPrime_);
+      aod_tree->SetBranchAddress("AODCaloJetAlphaMaxPrime2",                    &orig_AODCaloJetAlphaMaxPrime2_);
+      aod_tree->SetBranchAddress("AODCaloJetBeta",                              &orig_AODCaloJetBeta_);
+      aod_tree->SetBranchAddress("AODCaloJetBeta2",                             &orig_AODCaloJetBeta2_);
       aod_tree->SetBranchAddress("AODCaloJetSumIP",                             &orig_AODCaloJetSumIP_);
       aod_tree->SetBranchAddress("AODCaloJetSumIPSig",                          &orig_AODCaloJetSumIPSig_);
       aod_tree->SetBranchAddress("AODCaloJetMedianIP",                          &orig_AODCaloJetMedianIP_);
@@ -247,6 +297,20 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
       aod_tree->GetEntry(j);
       
       matched=                                   true;
+      AODRun_=                                   aod_run;
+      AODEvent_=                                 aod_event;
+      AODllpId_=                                 *orig_AODllpId_;
+      AODllpStatus_=                             *orig_AODllpStatus_;
+      AODllpPt_=                                 *orig_AODllpPt_;
+      AODllpEta_=                                *orig_AODllpEta_;
+      AODllpPhi_=                                *orig_AODllpPhi_;
+      AODllpMass_=                               *orig_AODllpMass_;
+      AODllpDaughterId_=                         *orig_AODllpDaughterId_;
+      AODllpDaughterStatus_=                     *orig_AODllpDaughterStatus_;
+      AODllpDaughterPt_=                         *orig_AODllpDaughterPt_;
+      AODllpDaughterEta_=                        *orig_AODllpDaughterEta_;
+      AODllpDaughterPhi_=                        *orig_AODllpDaughterPhi_;
+      AODllpDaughterMass_=                       *orig_AODllpDaughterMass_;
       AODnCaloJet_=                              orig_AODnCaloJet_; 
       AODCaloJetPt_=                             *orig_AODCaloJetPt_;
       AODCaloJetEta_=                            *orig_AODCaloJetEta_;
@@ -351,66 +415,93 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   TTree *merged_tree = miniaod_tree->CloneTree();
 
   //New branches for merged tree
-  TBranch* b_0 = merged_tree->Branch("AOD_matched", &matched);
-  TBranch* b_1 = merged_tree->Branch("AOD_AODnCaloJet", &AODnCaloJet_);
-  TBranch* b_2 = merged_tree->Branch("AOD_AODCaloJetPt",  "vector<float>",                    &AODCaloJetPt_);
-  TBranch* b_3 = merged_tree->Branch("AOD_AODCaloJetEta", "vector<float>",                    &AODCaloJetEta_);
-  TBranch* b_4 = merged_tree->Branch("AOD_AODCaloJetPhi", "vector<float>",                    &AODCaloJetPhi_);
-  TBranch* b_5 = merged_tree->Branch("AOD_AODCaloJetAlphaMax", "vector<float>",               &AODCaloJetAlphaMax_);
-  TBranch* b_6 = merged_tree->Branch("AOD_AODCaloJetAlphaMax2", "vector<float>",              &AODCaloJetAlphaMax2_);                               
-  TBranch* b_7 = merged_tree->Branch("AOD_AODCaloJetAlphaMaxPrime", "vector<float>",          &AODCaloJetAlphaMaxPrime_);                               
-  TBranch* b_8 = merged_tree->Branch("AOD_AODCaloJetAlphaMaxPrime2", "vector<float>",         &AODCaloJetAlphaMaxPrime2_);                               
-  TBranch* b_9 = merged_tree->Branch("AOD_AODCaloJetBeta", "vector<float>",                   &AODCaloJetBeta_);                               
-  TBranch* b_10 = merged_tree->Branch("AOD_AODCaloJetBeta2", "vector<float>",                 &AODCaloJetBeta2_);                               
-  TBranch* b_11 = merged_tree->Branch("AOD_AODCaloJetSumIP", "vector<float>",                 &AODCaloJetSumIP_);
-  TBranch* b_12 = merged_tree->Branch("AOD_AODCaloJetSumIPSig", "vector<float>",              &AODCaloJetSumIPSig_);
-  TBranch* b_13 = merged_tree->Branch("AOD_AODCaloJetMedianIP", "vector<float>",              &AODCaloJetMedianIP_);
-  TBranch* b_14 = merged_tree->Branch("AOD_AODCaloJetMedianLog10IPSig", "vector<float>",      &AODCaloJetMedianLog10IPSig_);
-  TBranch* b_15 = merged_tree->Branch("AOD_AODCaloJetTrackAngle", "vector<float>",            &AODCaloJetTrackAngle_);
-  TBranch* b_16 = merged_tree->Branch("AOD_AODCaloJetLogTrackAngle", "vector<float>",         &AODCaloJetLogTrackAngle_);
-  TBranch* b_17 = merged_tree->Branch("AOD_AODCaloJetMedianLog10TrackAngle", "vector<float>", &AODCaloJetMedianLog10TrackAngle_);
-  TBranch* b_18 = merged_tree->Branch("AOD_AODCaloJetTotalTrackAngle", "vector<float>",       &AODCaloJetTotalTrackAngle_);
-  TBranch* b_19 = merged_tree->Branch("AOD_AODCaloJetAvfVx", "vector<float>",                     &AODCaloJetAvfVx_);
-  TBranch* b_20 = merged_tree->Branch("AOD_AODCaloJetAvfVy", "vector<float>",                     &AODCaloJetAvfVy_);
-  TBranch* b_21 = merged_tree->Branch("AOD_AODCaloJetAvfVz", "vector<float>",                     &AODCaloJetAvfVz_);
-  TBranch* b_22 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTotalChiSquared", "vector<float>",  &AODCaloJetAvfVertexTotalChiSquared_);
-  TBranch* b_23 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDegreesOfFreedom", "vector<float>", &AODCaloJetAvfVertexDegreesOfFreedom_);
-  TBranch* b_24 = merged_tree->Branch("AOD_AODCaloJetAvfVertexChi2NDoF", "vector<float>",         &AODCaloJetAvfVertexChi2NDoF_);
-  TBranch* b_25 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDistanceToBeam", "vector<float>",   &AODCaloJetAvfVertexDistanceToBeam_);
-  TBranch* b_26 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTransverseError", "vector<float>",  &AODCaloJetAvfVertexTransverseError_);
-  TBranch* b_27 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTransverseSig", "vector<float>",    &AODCaloJetAvfVertexTransverseSig_);
-  TBranch* b_28 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaEta", "vector<float>",         &AODCaloJetAvfVertexDeltaEta_);
-  TBranch* b_29 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaPhi", "vector<float>",         &AODCaloJetAvfVertexDeltaPhi_);
-  TBranch* b_30 = merged_tree->Branch("AOD_AODCaloJetAvfVertexRecoilPt", "vector<float>",         &AODCaloJetAvfVertexRecoilPt_);
-  TBranch* b_31 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTrackMass", "vector<float>",        &AODCaloJetAvfVertexTrackMass_);
-  TBranch* b_32 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTrackEnergy", "vector<float>",      &AODCaloJetAvfVertexTrackEnergy_);
-  TBranch* b_33 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotDeltaPhi", "vector<float>",       &AODCaloJetAvfBeamSpotDeltaPhi_);
-  TBranch* b_34 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotRecoilPt", "vector<float>",       &AODCaloJetAvfBeamSpotRecoilPt_);
-  TBranch* b_35 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotMedianDeltaPhi", "vector<float>",       &AODCaloJetAvfBeamSpotMedianDeltaPhi_);
-  TBranch* b_36 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotLog10MedianDeltaPhi", "vector<float>",  &AODCaloJetAvfBeamSpotLog10MedianDeltaPhi_);
-  TBranch* b_37 = merged_tree->Branch("AOD_AODCaloJetNCleanMatchedTracks", "vector<int>",               &AODCaloJetNCleanMatchedTracks_);
-  TBranch* b_38 = merged_tree->Branch("AOD_AODCaloJetSumHitsInFrontOfVert", "vector<int>",              &AODCaloJetSumHitsInFrontOfVert_);
-  TBranch* b_39 = merged_tree->Branch("AOD_AODCaloJetSumMissHitsAfterVert", "vector<int>",              &AODCaloJetSumMissHitsAfterVert_);
-  TBranch* b_40 = merged_tree->Branch("AOD_AODCaloJetHitsInFrontOfVertPerTrack", "vector<int>",         &AODCaloJetHitsInFrontOfVertPerTrack_);
-  TBranch* b_41 = merged_tree->Branch("AOD_AODCaloJetMissHitsAfterVertPerTrack", "vector<int>",         &AODCaloJetMissHitsAfterVertPerTrack_);
-  TBranch* b_42 = merged_tree->Branch("AOD_AODCaloJetAvfDistToPV", "vector<float>",                     &AODCaloJetAvfDistToPV_);
-  TBranch* b_43 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaZtoPV", "vector<float>",             &AODCaloJetAvfVertexDeltaZtoPV_);
-  TBranch* b_44 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaZtoPV2", "vector<float>",            &AODCaloJetAvfVertexDeltaZtoPV2_);
+  TBranch* b_0 = merged_tree->Branch("AOD_matched",                                           &matched);
+  TBranch* b_1 = merged_tree->Branch("AOD_run",                                               &AODRun_);
+  TBranch* b_2 = merged_tree->Branch("AOD_event",                                             &AODEvent_);
+  TBranch* b_3 = merged_tree->Branch("AOD_llpId",    "vector<int>",                           &AODllpId_);
+  TBranch* b_4 = merged_tree->Branch("AOD_llpStatus","vector<int>",                           &AODllpStatus_);
+  TBranch* b_5 = merged_tree->Branch("AOD_llpPt",    "vector<float>",                         &AODllpPt_);
+  TBranch* b_6 = merged_tree->Branch("AOD_llpEta",   "vector<float>",                         &AODllpEta_);
+  TBranch* b_7 = merged_tree->Branch("AOD_llpPhi",   "vector<float>",                         &AODllpPhi_);
+  TBranch* b_8 = merged_tree->Branch("AOD_llpMass",   "vector<float>",                        &AODllpMass_);
+  TBranch* b_9 = merged_tree->Branch("AOD_llpDaughterId",   "vector<int>",                    &AODllpDaughterId_);
+  TBranch* b_10 = merged_tree->Branch("AOD_llpDaughterStatus",  "vector<int>",                 &AODllpDaughterStatus_);
+  TBranch* b_11 = merged_tree->Branch("AOD_llpDaughterPt",   "vector<float>",                  &AODllpDaughterPt_);
+  TBranch* b_12 = merged_tree->Branch("AOD_llpDaughterEta",  "vector<float>",                  &AODllpDaughterEta_);
+  TBranch* b_13 = merged_tree->Branch("AOD_llpDaughterPhi",  "vector<float>",                  &AODllpDaughterPhi_);
+  TBranch* b_14 = merged_tree->Branch("AOD_AODllpDaughterMass",   "vector<float>",             &AODllpDaughterMass_);
+  TBranch* b_15 = merged_tree->Branch("AOD_AODnCaloJet",                                       &AODnCaloJet_);
+  TBranch* b_16 = merged_tree->Branch("AOD_AODCaloJetPt",  "vector<float>",                    &AODCaloJetPt_);
+  TBranch* b_17 = merged_tree->Branch("AOD_AODCaloJetEta", "vector<float>",                    &AODCaloJetEta_);
+  TBranch* b_18 = merged_tree->Branch("AOD_AODCaloJetPhi", "vector<float>",                    &AODCaloJetPhi_);
+  TBranch* b_19 = merged_tree->Branch("AOD_AODCaloJetAlphaMax", "vector<float>",               &AODCaloJetAlphaMax_);
+  TBranch* b_20 = merged_tree->Branch("AOD_AODCaloJetAlphaMax2", "vector<float>",              &AODCaloJetAlphaMax2_);                               
+  TBranch* b_21 = merged_tree->Branch("AOD_AODCaloJetAlphaMaxPrime", "vector<float>",          &AODCaloJetAlphaMaxPrime_);                               
+  TBranch* b_22 = merged_tree->Branch("AOD_AODCaloJetAlphaMaxPrime2", "vector<float>",         &AODCaloJetAlphaMaxPrime2_);                               
+  TBranch* b_23 = merged_tree->Branch("AOD_AODCaloJetBeta", "vector<float>",                   &AODCaloJetBeta_);                               
+  TBranch* b_24 = merged_tree->Branch("AOD_AODCaloJetBeta2", "vector<float>",                 &AODCaloJetBeta2_);                               
+  TBranch* b_25 = merged_tree->Branch("AOD_AODCaloJetSumIP", "vector<float>",                 &AODCaloJetSumIP_);
+  TBranch* b_26 = merged_tree->Branch("AOD_AODCaloJetSumIPSig", "vector<float>",              &AODCaloJetSumIPSig_);
+  TBranch* b_27 = merged_tree->Branch("AOD_AODCaloJetMedianIP", "vector<float>",              &AODCaloJetMedianIP_);
+  TBranch* b_28 = merged_tree->Branch("AOD_AODCaloJetMedianLog10IPSig", "vector<float>",      &AODCaloJetMedianLog10IPSig_);
+  TBranch* b_29 = merged_tree->Branch("AOD_AODCaloJetTrackAngle", "vector<float>",            &AODCaloJetTrackAngle_);
+  TBranch* b_30 = merged_tree->Branch("AOD_AODCaloJetLogTrackAngle", "vector<float>",         &AODCaloJetLogTrackAngle_);
+  TBranch* b_31 = merged_tree->Branch("AOD_AODCaloJetMedianLog10TrackAngle", "vector<float>", &AODCaloJetMedianLog10TrackAngle_);
+  TBranch* b_32 = merged_tree->Branch("AOD_AODCaloJetTotalTrackAngle", "vector<float>",       &AODCaloJetTotalTrackAngle_);
+  TBranch* b_33 = merged_tree->Branch("AOD_AODCaloJetAvfVx", "vector<float>",                     &AODCaloJetAvfVx_);
+  TBranch* b_34 = merged_tree->Branch("AOD_AODCaloJetAvfVy", "vector<float>",                     &AODCaloJetAvfVy_);
+  TBranch* b_35 = merged_tree->Branch("AOD_AODCaloJetAvfVz", "vector<float>",                     &AODCaloJetAvfVz_);
+  TBranch* b_36 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTotalChiSquared", "vector<float>",  &AODCaloJetAvfVertexTotalChiSquared_);
+  TBranch* b_37 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDegreesOfFreedom", "vector<float>", &AODCaloJetAvfVertexDegreesOfFreedom_);
+  TBranch* b_38 = merged_tree->Branch("AOD_AODCaloJetAvfVertexChi2NDoF", "vector<float>",         &AODCaloJetAvfVertexChi2NDoF_);
+  TBranch* b_39 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDistanceToBeam", "vector<float>",   &AODCaloJetAvfVertexDistanceToBeam_);
+  TBranch* b_40 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTransverseError", "vector<float>",  &AODCaloJetAvfVertexTransverseError_);
+  TBranch* b_41 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTransverseSig", "vector<float>",    &AODCaloJetAvfVertexTransverseSig_);
+  TBranch* b_42 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaEta", "vector<float>",         &AODCaloJetAvfVertexDeltaEta_);
+  TBranch* b_43 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaPhi", "vector<float>",         &AODCaloJetAvfVertexDeltaPhi_);
+  TBranch* b_44 = merged_tree->Branch("AOD_AODCaloJetAvfVertexRecoilPt", "vector<float>",         &AODCaloJetAvfVertexRecoilPt_);
+  TBranch* b_45 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTrackMass", "vector<float>",        &AODCaloJetAvfVertexTrackMass_);
+  TBranch* b_46 = merged_tree->Branch("AOD_AODCaloJetAvfVertexTrackEnergy", "vector<float>",      &AODCaloJetAvfVertexTrackEnergy_);
+  TBranch* b_47 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotDeltaPhi", "vector<float>",       &AODCaloJetAvfBeamSpotDeltaPhi_);
+  TBranch* b_48 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotRecoilPt", "vector<float>",       &AODCaloJetAvfBeamSpotRecoilPt_);
+  TBranch* b_49 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotMedianDeltaPhi", "vector<float>",       &AODCaloJetAvfBeamSpotMedianDeltaPhi_);
+  TBranch* b_50 = merged_tree->Branch("AOD_AODCaloJetAvfBeamSpotLog10MedianDeltaPhi", "vector<float>",  &AODCaloJetAvfBeamSpotLog10MedianDeltaPhi_);
+  TBranch* b_51 = merged_tree->Branch("AOD_AODCaloJetNCleanMatchedTracks", "vector<int>",               &AODCaloJetNCleanMatchedTracks_);
+  TBranch* b_52 = merged_tree->Branch("AOD_AODCaloJetSumHitsInFrontOfVert", "vector<int>",              &AODCaloJetSumHitsInFrontOfVert_);
+  TBranch* b_53 = merged_tree->Branch("AOD_AODCaloJetSumMissHitsAfterVert", "vector<int>",              &AODCaloJetSumMissHitsAfterVert_);
+  TBranch* b_54 = merged_tree->Branch("AOD_AODCaloJetHitsInFrontOfVertPerTrack", "vector<int>",         &AODCaloJetHitsInFrontOfVertPerTrack_);
+  TBranch* b_55 = merged_tree->Branch("AOD_AODCaloJetMissHitsAfterVertPerTrack", "vector<int>",         &AODCaloJetMissHitsAfterVertPerTrack_);
+  TBranch* b_56 = merged_tree->Branch("AOD_AODCaloJetAvfDistToPV", "vector<float>",                     &AODCaloJetAvfDistToPV_);
+  TBranch* b_57 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaZtoPV", "vector<float>",             &AODCaloJetAvfVertexDeltaZtoPV_);
+  TBranch* b_58 = merged_tree->Branch("AOD_AODCaloJetAvfVertexDeltaZtoPV2", "vector<float>",            &AODCaloJetAvfVertexDeltaZtoPV2_);
    
 
   /////////////////////////////
   // Loop over MiniAOD
   /////////////////////////////
-  Long64_t nentries = miniaod_tree->GetEntries();
+  Long64_t nentries = merged_tree->GetEntries();
   for(Long64_t i = 0; i < nentries; i++) {
     if(i%1000==0) cout << i << "/" << nentries << endl;
-    if(i>100) break;
 
-    miniaod_tree->GetEntry(i);
-  
+    merged_tree->GetEntry(i);
+    
     //Clear new branches for merged tree
     matched=false;
-    AODnCaloJet_=0;
+    AODRun_=-1;
+    AODEvent_=-1;
+    AODllpId_.clear();
+    AODllpStatus_.clear();
+    AODllpPt_.clear();
+    AODllpEta_.clear();
+    AODllpPhi_.clear();
+    AODllpMass_.clear();
+    AODllpDaughterId_.clear();
+    AODllpDaughterStatus_.clear();
+    AODllpDaughterPt_.clear();
+    AODllpDaughterEta_.clear();
+    AODllpDaughterPhi_.clear();
+    AODllpDaughterMass_.clear();
+    AODnCaloJet_=-1;
     AODCaloJetPt_.clear();
     AODCaloJetEta_.clear();
     AODCaloJetPhi_.clear();
@@ -454,6 +545,9 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
     AODCaloJetAvfDistToPV_.clear();
     AODCaloJetAvfVertexDeltaZtoPV_.clear();
     AODCaloJetAvfVertexDeltaZtoPV2_.clear();
+
+    if(i>=100) break;
+    if(verbose) cout << "About to search for AOD matching entry " << i << endl;
 
     //Find aod
     int success = find_aod(aod_list, start_suggest, miniaod_run, miniaod_event);
