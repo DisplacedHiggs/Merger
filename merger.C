@@ -11,6 +11,7 @@ using namespace std;
 bool verbose = true;
 int current_open_file = -1;
 TFile * aod_file;
+const int max_events = 100;
 
 //--new branches for merged tree
 Bool_t         matched;
@@ -410,6 +411,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   outfile_name = outfile_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
   TFile *merged_file = TFile::Open(outfile_name, "RECREATE");
   TTree *merged_tree = miniaod_tree->CloneTree();
+  merged_tree->SetName("MergedEventTree");
 
   int merged_run;
   Long64_t merged_event;
@@ -548,12 +550,13 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
     AODCaloJetAvfVertexDeltaZtoPV_.clear();
     AODCaloJetAvfVertexDeltaZtoPV2_.clear();
 
-    if(i==100) break;
     if(verbose) cout << "About to search for AOD matching entry " << i << endl;
 
     //Find aod
-    int success = find_aod(aod_list, start_suggest, merged_run, merged_event);
+    int success = 0;
+    if(max_events>0 && i<max_events) success = find_aod(aod_list, start_suggest, merged_run, merged_event);
     
+    if(verbose) cout << "Filling after success = " << success << endl;
     b_0->Fill();
     b_1->Fill();
     b_2->Fill();
@@ -599,12 +602,13 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
     b_42->Fill();
     b_43->Fill();
     b_44->Fill();
-    
+
   }
+  cout << "end merged tree loop" << endl;
 
   merged_file->cd();
   hEvents->Write();
-  merged_file->Write();
+  merged_tree->Write();
   aod_file->Close();
   merged_file->Close();
   miniaod_file->Close();
