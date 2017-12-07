@@ -556,7 +556,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
 
     //Find aod
     int success = 0;
-    if(max_events>0 && i<max_events) success = find_aod(aod_list, start_suggest, merged_run, merged_event);
+    if(max_events<0 || i<max_events) success = find_aod(aod_list, start_suggest, merged_run, merged_event);
     
     if(verbose) cout << "Filling after success = " << success << endl;
     b_0->Fill();
@@ -613,13 +613,20 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   //outfile_name = outfile_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
   //TFile *merged_file = TFile::Open(outfile_name, "RECREATE");
   merged_file->cd();
+  cout << "debug 1" << endl;
   hEvents->Write();
+  cout << "debug 2" << endl;
   merged_tree->Write();
+  cout << "debug 3" << endl;
   gDirectory->Delete("MINIAOD_TREE;*");
+  cout << "debug 4" << endl;
   merged_file->Close();
+  cout << "debug 5" << endl;
 
-  aod_file->Close();
-  miniaod_file->Close();
-  delete merged_file;
-  delete miniaod_file;
+  //aod_file->Close();
+  //cout << "debug 6" << endl;
+  //miniaod_file->Close();
+  //cout << "debug 7" << endl;
+  //delete merged_file;
+  //delete miniaod_file;
 }
