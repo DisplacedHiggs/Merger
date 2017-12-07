@@ -2,13 +2,107 @@
 
 
 doSubmit=false
-maxfilesperjob=1
-outdir=root://cmseos.fnal.gov//store/user/lpchbb/LLDJntuples/merged
-AOD_LIST_LOCATION=/uscms_data/d2/kreis/LLDJ/20171117_sort/Merger/submitter/lists/aod/
-MINIAOD_LIST_LOCATION=/uscms_data/d2/kreis/LLDJ/20171117_sort/Merger/submitter/lists/miniaod/
+maxfilesperjob=3
+outdir=root://cmseos.fnal.gov//store/user/lpchbb/LLDJntuples/merged/splot
+AOD_LIST_LOCATION=/uscms_data/d2/kreis/LLDJ/20171117_sort/Merger/makelists/mylists_aod/
+MINIAOD_LIST_LOCATION=/uscms_data/d2/kreis/LLDJ/20171117_sort/Merger/makelists/mylists_mini/
 
 samples=(  \
  "DY50_1"                               \
+ "DY50_2"                               \
+ "DY5to50_HT100to200_1"                               \
+ "DY5to50_HT100to200_2"                               \
+ "DY5to50_HT200to400_1"                               \
+ "DY5to50_HT200to400_2"                               \
+ "DY5to50_HT400to600_1"                               \
+ "DY5to50_HT400to600_2"                               \
+ "DY5to50_HT600toInf_1"                               \
+ "DY5to50_HT600toInf_2"                               \
+ "DY5to50_HT70to100"                               \
+ "GJets_HT100to200_1"                               \
+ "GJets_HT100to200_2"                               \
+ "GJets_HT200to400_1"                               \
+ "GJets_HT200to400_2"                               \
+ "GJets_HT400to600_1"                               \
+ "GJets_HT400to600_2"                               \
+ "GJets_HT40to100_1"                               \
+ "GJets_HT40to100_2"                               \
+ "GJets_HT600toInf_1"                               \
+ "GJets_HT600toInf_2"                               \
+ "STs"                               \
+ "STtbar"                               \
+ "STt"                               \
+ "STtbarW_1"                               \
+ "STtbarW_2"                               \
+ "STtW_1"                               \
+ "STtW_2"                               \
+ "Data_SingleEle_B_1"                               \
+ "Data_SingleEle_B_2"                               \
+ "Data_SingleEle_C"                               \
+ "Data_SingleEle_D"                               \
+ "Data_SingleEle_E"                               \
+ "Data_SingleEle_F"                               \
+ "Data_SingleEle_G"                               \
+ "Data_SingleEle_H_2"                               \
+ "Data_SingleEle_H_3"                               \
+ "Data_SingleMu_B_1"                               \
+ "Data_SingleMu_B_2"                               \
+ "Data_SingleMu_C"                               \
+ "Data_SingleMu_D"                               \
+ "Data_SingleMu_E"                               \
+ "Data_SingleMu_F"                               \
+ "Data_SingleMu_G"                               \
+ "Data_SingleMu_H_2"                               \
+ "Data_SingleMu_H_3"                               \
+ "TTtoLL_1"                               \
+ "TTtoLL_2"                               \
+ "TTtoLfromT_1"                               \
+ "TTtoLfromT_2"                               \
+ "TTtoLfromTbar_1"                               \
+ "TTtoLfromTbar_2"                               \
+ "WG"                               \
+ "WJets_1"                               \
+ "WJets_2"                               \
+ "WWToLNuLNu"                               \
+ "WWToLNuQQ_1"                               \
+ "WWToLNuQQ_2"                               \
+ "WZToLNuNuNu"                               \
+ "WZToLLLNu"                               \
+ "WZToLNu2QorQQ2L"                               \
+ "ZG"                               \
+ "ZH_Hbb_1"                               \
+ "ZH_Hbb_2"                               \
+ "ZH_HToSSTobbbb_MS-15_ctauS-1000"                               \
+ "ZH_HToSSTobbbb_MS-15_ctauS-100"                               \
+ "ZH_HToSSTobbbb_MS-15_ctauS-10"                               \
+ "ZH_HToSSTobbbb_MS-15_ctauS-1"                               \
+ "ZH_HToSSTobbbb_MS-40_ctauS-1000"                               \
+ "ZH_HToSSTobbbb_MS-40_ctauS-100"                               \
+ "ZH_HToSSTobbbb_MS-40_ctauS-10"                               \
+ "ZH_HToSSTobbbb_MS-40_ctauS-1"                               \
+ "ZH_HToSSTobbbb_MS-55_ctauS-1000"                               \
+ "ZH_HToSSTobbbb_MS-55_ctauS-100"                               \
+ "ZH_HToSSTobbbb_MS-55_ctauS-10"                               \
+ "ZH_HToSSTobbbb_MS-55_ctauS-1"                               \
+ "ZZToLLNuNu"                               \
+ "ZZToLLQQ"                               \
+ "ZZToNuNuQQ"                               \
+ "ZZToLLLL"                               \
+ "ggZH_Hbb_1"                               \
+ "ggZH_Hbb_2"                               \
+ "ggZH_Hbb_3"                               \
+ "ggZH_HToSSTobbbb_MS-15_ctauS-1000"                               \
+ "ggZH_HToSSTobbbb_MS-15_ctauS-100"                               \
+ "ggZH_HToSSTobbbb_MS-15_ctauS-10"                               \
+ "ggZH_HToSSTobbbb_MS-15_ctauS-1"                               \
+ "ggZH_HToSSTobbbb_MS-40_ctauS-1000"                               \
+ "ggZH_HToSSTobbbb_MS-40_ctauS-100"                               \
+ "ggZH_HToSSTobbbb_MS-40_ctauS-10"                               \
+ "ggZH_HToSSTobbbb_MS-40_ctauS-1"                               \
+ "ggZH_HToSSTobbbb_MS-55_ctauS-1000"                               \
+ "ggZH_HToSSTobbbb_MS-55_ctauS-100"                               \
+ "ggZH_HToSSTobbbb_MS-55_ctauS-10"                               \
+ "ggZH_HToSSTobbbb_MS-55_ctauS-1"                               \
 )
 
 
