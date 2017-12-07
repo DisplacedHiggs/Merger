@@ -4,14 +4,15 @@
 #include "TFile.h"
 #include "TH1F.h"
 #include "TTree.h"
+#include "TDirectory.h"
 
 using namespace std;
 
 //Global stuff
-bool verbose = true;
+bool verbose = false;
 int current_open_file = -1;
 TFile * aod_file;
-const int max_events = 100;
+const int max_events = -1;
 
 //--new branches for merged tree
 Bool_t         matched;
@@ -403,7 +404,8 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   TH1F* hEvents = (TH1F*)miniaod_file->Get("lldjNtuple/hEvents");
   TTree* miniaod_tree = (TTree*)miniaod_file->Get("lldjNtuple/EventTree");
   miniaod_tree->SetName("MINIAOD_TREE");
-  
+  //TDirectory *dir = miniaod_file->GetDirectory("lldjNtuple");
+
   /////////////////////////////
   // Merged output
   /////////////////////////////
@@ -606,11 +608,17 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   }
   cout << "end merged tree loop" << endl;
 
+  //miniaod_tree->SetDirectory(dir);
+  //TString outfile_name = "merged_";
+  //outfile_name = outfile_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
+  //TFile *merged_file = TFile::Open(outfile_name, "RECREATE");
   merged_file->cd();
   hEvents->Write();
   merged_tree->Write();
-  aod_file->Close();
+  gDirectory->Delete("MINIAOD_TREE;*");
   merged_file->Close();
+
+  aod_file->Close();
   miniaod_file->Close();
   delete merged_file;
   delete miniaod_file;
