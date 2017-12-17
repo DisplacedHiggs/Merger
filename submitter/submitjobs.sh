@@ -2,8 +2,9 @@
 
 
 doSubmit=false
-maxfilesperjob=3
-outdir=root://cmseos.fnal.gov//store/user/lpchbb/LLDJntuples/merged/splot
+maxfilesperjob=1
+submitdir="mysubmitdir_dec15"
+root_outdir=root://cmseos.fnal.gov//store/user/lpchbb/LLDJntuples/merged/splot_bigHadd
 AOD_LIST_LOCATION=/uscms_data/d2/kreis/LLDJ/20171117_sort/Merger/makelists/mylists_aod/
 MINIAOD_LIST_LOCATION=/uscms_data/d2/kreis/LLDJ/20171117_sort/Merger/makelists/mylists_mini/
 
@@ -54,6 +55,13 @@ samples=(  \
  "Data_SingleMu_G"                               \
  "Data_SingleMu_H_2"                               \
  "Data_SingleMu_H_3"                               \
+ "Data_SinglePhoton_B_2"                               \
+ "Data_SinglePhoton_D"                               \
+ "Data_SinglePhoton_E"                               \
+ "Data_SinglePhoton_F"                               \
+ "Data_SinglePhoton_G"                               \
+ "Data_SinglePhoton_H_2"                               \
+ "Data_SinglePhoton_H_3"                               \
  "TTtoLL_1"                               \
  "TTtoLL_2"                               \
  "TTtoLfromT_1"                               \
@@ -117,11 +125,10 @@ makeasubmitdir () {
  printf "Making submits for $1\n"
  
  #Make output stuff 
- submitdir="submitdir"
  mkdir -p ${submitdir}/$1
  mkdir -p ${submitdir}/$1/logs
 
- outdir=${outdir}/$1
+ outdir=${root_outdir}/$1
 
  submitfile=${submitdir}/submit_$1.condor 
  
@@ -133,6 +140,7 @@ makeasubmitdir () {
  printf "Transfer_Input_Files = ../runjob.sh, ../../merger.C, ${AOD_LIST_LOCATION}/$1.list\n" >> $submitfile
  printf "Notification=Never\n" >> $submitfile
  printf "notify_user = $(whoami)@cern.ch\n" >> $submitfile
+ printf "request_memory = 8000\n" >> $submitfile
  printf "x509userproxy = $X509_USER_PROXY\n" >> $submitfile
  printf "Output = $1/logs/merger_\$(Cluster)_\$(Process).stdout\n" >> $submitfile
  printf "Error  = $1/logs/merger_\$(Cluster)_\$(Process).stderr\n" >> $submitfile

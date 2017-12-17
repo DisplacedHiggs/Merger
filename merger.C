@@ -298,7 +298,7 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
 
       aod_tree->GetEntry(j);
       
-      cout << "orig_AODnCaloJet_ " << orig_AODnCaloJet_ << endl;
+      //cout << "orig_AODnCaloJet_ " << orig_AODnCaloJet_ << endl;
 
       matched=                                   true;
       AODRun_=                                   aod_run;
@@ -381,7 +381,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   std::ifstream input(aod_list_file_name, std::ifstream::in);
   TString aod_file_name;
   while(input>>aod_file_name){
-    aod_file_name.Remove(0, 10);
+    //aod_file_name.Remove(0, 10);
     aod_list.push_back(aod_file_name);
   }
   cout << "AOD file list size: " << aod_list.size() << endl;
@@ -393,7 +393,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   //////////////////////////////
 
   //Formatting
-  miniaod_file_name.Remove(0, 10);
+  //miniaod_file_name.Remove(0, 10);
   miniaod_file_name = "root://cmseos.fnal.gov://" + miniaod_file_name;
 
   TFile *miniaod_file = TFile::Open(miniaod_file_name, "READ");
