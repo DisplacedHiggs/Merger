@@ -13,6 +13,8 @@ bool verbose = false;
 int current_open_file = -1;
 TFile * aod_file;
 const int max_events = -1;
+Long64_t aod_event_start = 0;
+Long64_t aod_event_start_offset = -200;
 
 //--new branches for merged tree
 Bool_t         matched;
@@ -116,14 +118,24 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
     //Loop through AOD tree
     Long64_t nentries = aod_tree->GetEntries();
     for(Long64_t j = 0; j < nentries; j++) {
-      aod_tree->GetEntry(j);
+      
+      //Start search X events offset from previous match (recommend negative values)
+      Long64_t event_to_get = aod_event_start + j + aod_event_start_offset;
+      if(event_to_get<0) event_to_get = nentries + event_to_get;//event_to_get is negative
+      if(event_to_get >= nentries) event_to_get = event_to_get - nentries;
+      
+      aod_tree->GetEntry(event_to_get);
       
       if(aod_run != mini_run) continue;
       if(aod_event != mini_event) continue;
 
       //Matched!
       if(verbose) cout << "Found match: File = " << aod_list[f] << ", " << aod_run << " " << mini_run << " " << aod_event << " " << mini_event << endl;
+      //cout << "start: " << aod_event_start << ", and found: " << event_to_get << endl;
+      //if(event_to_get<(aod_event_start+aod_event_start_offset)) cout << "HAD TO LOOP!" << endl;
+
       start_suggest = f;
+      aod_event_start = event_to_get;
 
       //Now get everything
       aod_tree->SetBranchStatus("llpId", 1); 
@@ -296,7 +308,7 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
       aod_tree->SetBranchAddress("AODCaloJetAvfVertexDeltaZtoPV",               &orig_AODCaloJetAvfVertexDeltaZtoPV_);
       aod_tree->SetBranchAddress("AODCaloJetAvfVertexDeltaZtoPV2",              &orig_AODCaloJetAvfVertexDeltaZtoPV2_);
 
-      aod_tree->GetEntry(j);
+      aod_tree->GetEntry(event_to_get);
       
       //cout << "orig_AODnCaloJet_ " << orig_AODnCaloJet_ << endl;
 
@@ -368,12 +380,13 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
 
 
 
-void merger(TString miniaod_file_name, TString aod_list_file_name){
+void merger_test(TString miniaod_file_name, TString aod_list_file_name){
 
   cout << "Running merger with arguments: " << endl;
   cout << "miniaod_file_name: " << miniaod_file_name << endl;
   cout << "aod_list_file_name: " << aod_list_file_name << endl;
-
+  cout << "aod_event_start_offset: " << aod_event_start_offset << endl;
+  
   //////////////////////////////
   // List of AOD files
   //////////////////////////////
@@ -410,7 +423,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   // Merged output
   /////////////////////////////
   TString outfile_name = "merged_";
-  outfile_name = outfile_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
+  outfile_name = outfile_name + aod_list_file_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
   TFile *merged_file = TFile::Open(outfile_name, "RECREATE");
   TTree *merged_tree = miniaod_tree->CloneTree();
   merged_tree->SetName("MergedEventTree");
