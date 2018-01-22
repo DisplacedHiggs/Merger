@@ -380,7 +380,7 @@ int find_aod(std::vector<TString> aod_list, unsigned int &start_suggest, int min
 
 
 
-void merger_test(TString miniaod_file_name, TString aod_list_file_name){
+void merger(TString miniaod_file_name, TString aod_list_file_name){
 
   cout << "Running merger with arguments: " << endl;
   cout << "miniaod_file_name: " << miniaod_file_name << endl;
