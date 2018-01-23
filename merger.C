@@ -9,10 +9,10 @@
 using namespace std;
 
 //Global stuff
-bool verbose = true;
+bool verbose = false;
 int current_open_file = -1;
 TFile * aod_file;
-const int max_events = 10;
+const int max_events = -1;
 Long64_t aod_event_start = 0;
 Long64_t aod_event_start_offset = -200;
 
@@ -410,7 +410,6 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   //////////////////////////////
 
   //Formatting
-  //miniaod_file_name.Remove(0, 10);
   miniaod_file_name = "root://cmseos.fnal.gov://" + miniaod_file_name;
 
   TFile *miniaod_file = TFile::Open(miniaod_file_name, "READ");
@@ -422,6 +421,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   TTree* miniaod_tree = (TTree*)miniaod_file->Get("lldjNtuple/EventTree");
   miniaod_tree->SetName("MINIAOD_TREE");
   //TDirectory *dir = miniaod_file->GetDirectory("lldjNtuple");
+
 
   /////////////////////////////
   // Merged output
@@ -635,15 +635,10 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   //outfile_name = outfile_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
   //TFile *merged_file = TFile::Open(outfile_name, "RECREATE");
   merged_file->cd();
-  cout << "debug 1" << endl;
   hEvents->Write();
-  cout << "debug 2" << endl;
   merged_tree->Write();
-  cout << "debug 3" << endl;
   gDirectory->Delete("MINIAOD_TREE;*");
-  cout << "debug 4" << endl;
   merged_file->Close();
-  cout << "debug 5" << endl;
 
   printf("nmatched   %llu\n", nmatched   );
   printf("nunmatched %llu\n", nunmatched );
