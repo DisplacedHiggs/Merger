@@ -9,12 +9,16 @@
 using namespace std;
 
 //Global stuff
-bool verbose = false;
+bool verbose = true;
 int current_open_file = -1;
 TFile * aod_file;
-const int max_events = -1;
+const int max_events = 10;
 Long64_t aod_event_start = 0;
 Long64_t aod_event_start_offset = -200;
+
+Long64_t nmatched = 0;
+Long64_t nunmatched = 0;
+Long64_t ntotal = 0;
 
 //--new branches for merged tree
 Bool_t         matched;
@@ -423,7 +427,8 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   // Merged output
   /////////////////////////////
   TString outfile_name = "merged_";
-  outfile_name = outfile_name + aod_list_file_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
+  outfile_name = outfile_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
+  //outfile_name = outfile_name + aod_list_file_name + miniaod_file_name.Remove(0,miniaod_file_name.Last('/')+1);
   TFile *merged_file = TFile::Open(outfile_name, "RECREATE");
   TTree *merged_tree = miniaod_tree->CloneTree();
   merged_tree->SetName("MergedEventTree");
@@ -502,6 +507,7 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   for(Long64_t i = 0; i < nentries; i++) {
     if(i%1000==0) cout << i << "/" << nentries << endl;
 
+    ntotal++;
     merged_tree->GetEntry(i);
     
     //Clear new branches for merged tree
@@ -570,6 +576,9 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
     //Find aod
     int success = 0;
     if(max_events<0 || i<max_events) success = find_aod(aod_list, start_suggest, merged_run, merged_event);
+
+    if(success==1){nmatched++;}
+    if(success==0){nunmatched++;}
     
     if(verbose) cout << "Filling after success = " << success << endl;
     b_0->Fill();
@@ -635,6 +644,10 @@ void merger(TString miniaod_file_name, TString aod_list_file_name){
   cout << "debug 4" << endl;
   merged_file->Close();
   cout << "debug 5" << endl;
+
+  printf("nmatched   %llu\n", nmatched   );
+  printf("nunmatched %llu\n", nunmatched );
+  printf("ntotal     %llu\n", ntotal     );
 
   //aod_file->Close();
   //cout << "debug 6" << endl;
